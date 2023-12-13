@@ -1,0 +1,9 @@
+# Test files describe situations and their expected outcomes
+# We can run this test on our command line using `openfisca test --country-package [YOUR_COUNTRY_PACKAGE_NAME] income_tax.yaml`
+
+- name: A flat rate of 25% tax on income salaries
+  period: 2023-01
+  input:
+    salary: 10000
+  output:
+    income_tax: 2500

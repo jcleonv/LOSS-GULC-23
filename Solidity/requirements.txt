@@ -1,0 +1,11 @@
+To deploy this smart contract:
+
+1. Open RemixIDE
+
+2. Load contract from address: 0xfd32F331E239d04fBaEade0bC3f11B0AE7158310 
+
+2a. You can also choose to deploy your own version of this contract with different values.
+
+3. Connect your MetaMask wallet with SepETH inside 
+
+4. Execute PaySalary function.
