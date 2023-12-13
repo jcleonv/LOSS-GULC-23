@@ -1,0 +1,68 @@
+```catala-metadata
+
+### This example was obtained from: https://catalalang.github.io/catala/tutorial_en.html
+
+declaration structure Individual:
+  # The name of the structure "Individual", must start with an
+  # uppercase letter: this is the CamelCase convention.
+  data income content money
+
+declaration scope IncomeTaxComputation:
+  # Scope names use CamelCase.
+  input individual content Individual
+  # This line declares a scope variable of the scope, which is akin to
+  # a function parameter in computer science term. This is the piece of
+  # data on which the scope will operate.
+  internal fixed_percentage content decimal
+  output income_tax content money
+
+```
+
+### FICTIONAL INCOME TAX LAW
+
+# (1) Definitions
+
+Article 1. The income tax for an individual is defined as a fixed percentage of the individual’s income over a year.
+
+```catala
+scope IncomeTaxComputation:
+  definition income_tax equals
+    individual.income * fixed_percentage
+```
+
+Article 2. The fixed percentage mentioned at article 1 is equal to 25%.
+
+```catala
+scope IncomeTaxComputation:
+  definition fixed_percentage equals 25 %
+
+```
+
+### Testing
+```catala
+declaration scope Test1:
+  # We include the scope to tax as a subscope.
+  tax_computation scope IncomeTaxComputation
+  output income_tax content money
+
+# To execute that test, assuming that the Catala compiler can be called
+# with "catala", enter the following command:
+#     catala Interpret --scope=Test1 test_tax_calculator.catala_en
+
+scope Test1:
+  definition
+    tax_computation.individual
+    # We define the argument to the subscope
+  equals
+    # The four lines below define a whole structure by giving a value to
+    # each of its fields
+    Individual {
+      -- income: $10,000
+    }
+
+  definition income_tax equals tax_computation.income_tax
+  # Next, we retrieve the income tax value compute it by the subscope and
+  # assert that it is equal to the expected value :
+  # $10,000*25% = $2,500
+  assertion income_tax = $2,500
+  ```

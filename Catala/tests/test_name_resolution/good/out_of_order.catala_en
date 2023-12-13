@@ -1,0 +1,57 @@
+## Article
+
+```catala
+declaration scope S:
+  context output a content A
+  context output b content B
+
+declaration structure A:
+   data x content integer
+   data y content B
+
+declaration structure B:
+   data y content boolean
+   data z content decimal
+
+scope S:
+   definition b equals B { -- y: true -- z: 0.0}
+   definition a equals A { -- x: 0 -- y : b }
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [41/41]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [2/2]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [2/2]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [6/6]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Interpret -s S
+[RESULT] Computation successful! Results:
+[RESULT] a = A { -- x: 0 -- y: B { -- y: true -- z: 0.0 } }
+[RESULT] b = B { -- y: true -- z: 0.0 }
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s S --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] a = A { -- x: 0 -- y: B { -- y: true -- z: 0.0 } }
+[RESULT] b = B { -- y: true -- z: 0.0 }
+```

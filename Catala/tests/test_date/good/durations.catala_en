@@ -1,0 +1,72 @@
+## Article
+
+```catala
+declaration scope A:
+  output x content date
+  output y content date
+  output z content boolean
+  output z2 content boolean
+  output z3 content duration
+  output m content duration
+  output m2 content duration
+
+scope A:
+  definition x equals |2019-01-01|
+  definition y equals |2002-09-30|
+
+  definition z equals y + (x - y) = x
+  definition z3 equals x - y
+  definition z2 equals z3 = 5937 day
+
+  definition m equals z3 * 2
+
+  definition m2 equals (2 month) * 3
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [85/85]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [7/7]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [7/7]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [14/14]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Interpret -s A
+[RESULT] Computation successful! Results:
+[RESULT] m = [11874 days]
+[RESULT] m2 = [6 months]
+[RESULT] x = 2019-01-01
+[RESULT] y = 2002-09-30
+[RESULT] z = true
+[RESULT] z2 = true
+[RESULT] z3 = [5937 days]
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s A --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] m = [11874 days]
+[RESULT] m2 = [6 months]
+[RESULT] x = 2019-01-01
+[RESULT] y = 2002-09-30
+[RESULT] z = true
+[RESULT] z2 = true
+[RESULT] z3 = [5937 days]
+```

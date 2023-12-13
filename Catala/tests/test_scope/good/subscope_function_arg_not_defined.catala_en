@@ -1,0 +1,54 @@
+## Article
+
+```catala
+declaration scope Callee:
+  context input_v content integer depends on b content boolean
+  context output output_v content integer
+
+declaration scope Caller:
+  sub scope Callee
+  context output y content integer
+
+scope Callee:
+  definition input_v of b equals if b then 0 else 1
+  definition output_v equals input_v of true + 1
+
+scope Caller:
+  definition y equals sub.output_v
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [75/75]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [6/6]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [3/3]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [6/6]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [9/9]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Interpret -s Caller
+[RESULT] Computation successful! Results:
+[RESULT] y = 1
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s Caller --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] y = 1
+```

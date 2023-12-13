@@ -1,0 +1,77 @@
+## Article
+
+```catala
+declaration scope A:
+  context output a content integer
+  context output b content boolean
+  context output a_base content integer
+
+declaration scope B:
+  context output a content integer
+  context output b content boolean
+  scopeA scope A
+  scopeAbis scope A
+
+scope A:
+  definition a_base equals 1
+  definition a equals -1
+  definition b equals a > 0
+
+scope B:
+  definition a equals 42
+  definition b equals scopeA.b
+  definition scopeA.a under condition a > 0 consequence equals scopeAbis.a_base
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [140/140]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [9/9]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [6/6]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [9/9]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [17/17]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Interpret -s A
+[RESULT] Computation successful! Results:
+[RESULT] a = -1
+[RESULT] a_base = 1
+[RESULT] b = false
+```
+
+```catala-test-inline
+$ catala Interpret -s B
+[RESULT] Computation successful! Results:
+[RESULT] a = 42
+[RESULT] b = true
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s A --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] a = -1
+[RESULT] a_base = 1
+[RESULT] b = false
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s B --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] a = 42
+[RESULT] b = true
+```

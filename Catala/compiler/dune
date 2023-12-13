@@ -1,0 +1,68 @@
+(library
+ (name driver)
+ (public_name catala.driver)
+ (libraries
+  dynlink
+  catala_utils
+  surface
+  desugared
+  literate
+  dcalc
+  lcalc
+  scalc
+  catala.runtime_ocaml
+  verification)
+ (modules plugin driver))
+
+(executable
+ (name catala_web_interpreter)
+ (modes byte js)
+ (package catala)
+ (public_name catala_web_interpreter)
+ (modules catala_web_interpreter)
+ (preprocess
+  (pps js_of_ocaml-ppx))
+ (libraries
+  catala.driver
+  js_of_ocaml
+  catala.runtime_ocaml
+  catala.runtime_jsoo))
+
+(executable
+ (name tests)
+ (modules tests)
+ (libraries catala.driver alcotest))
+
+(rule
+ (target custom_linking.sexp)
+ (mode fallback)
+ (action
+  (with-stdout-to
+   %{target}
+   (echo "()"))))
+
+(executable
+ (name catala)
+ (modes native js)
+ (flags
+  (:standard
+   (:include custom_linking.sexp)
+   -linkall))
+ (package catala)
+ (modules catala)
+ (public_name catala)
+ (libraries catala.driver ocamlgraph))
+
+(documentation
+ (package catala)
+ (mld_files index))
+
+(alias
+ (name catala)
+ (deps catala.exe))
+
+(rule
+ (alias runtest)
+ (package catala)
+ (action
+  (run ./tests.exe)))

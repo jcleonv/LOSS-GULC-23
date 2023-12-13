@@ -1,0 +1,42 @@
+{0 Lambda calculus}
+
+This representation is the fifth in the compilation chain
+(see {{: index.html#architecture} Architecture}). Its main difference
+with the previous {{: dcalc.html} default calculus} is the absence of the
+default term, which has been eliminated through diverse compilation schemes.
+
+The module describing the abstract syntax tree is:
+
+{!modules: Lcalc.Ast}
+
+This intermediate representation corresponds to the lambda calculus
+presented in the {{: https://arxiv.org/abs/2103.03198} Catala formalization}.
+
+{1 Compilation from default calculus }
+
+{!module: Lcalc.Compile_with_exceptions} compiles the default term of the
+default calculus using catchable exceptions. This compilation scheme has been
+certified. Another compilation scheme that uses an option monad instead is
+available at {!module:Lcalc.Compile_without_exceptions}.
+
+Related modules:
+
+{!modules: Lcalc.Compile_with_exceptions Lcalc.Compile_without_exceptions}
+
+{1 Closure conversion }
+
+To target languages that don't have support for closures, we need to convert 
+the closures to first-class functions in function-pointer-passing style 
+computations.
+
+{!modules: Lcalc.Closure_conversion }
+
+{1 Backends}
+
+The OCaml backend of the lambda calculus is merely a syntactic formatting,
+since the core of the OCaml value language is effectively a lambda calculus.
+
+Related modules:
+
+{!modules: Lcalc.To_ocaml}
+

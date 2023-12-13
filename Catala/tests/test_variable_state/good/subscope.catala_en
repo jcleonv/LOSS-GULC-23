@@ -1,0 +1,81 @@
+## Test
+
+```catala
+declaration scope A:
+  context output foo content integer
+    state bar
+    state baz
+    state fizz
+
+declaration scope B:
+  output foofoo content integer
+    state bar
+    state baz
+  b scope A
+  output foofoofoo content integer
+
+
+scope A:
+  definition foo state bar equals 1
+
+  definition foo state baz equals foo + 1
+
+  definition foo state fizz equals foo + 1
+
+
+scope B:
+  definition foofoo state bar equals 3
+  definition foofoo state baz equals foofoo + 1
+  definition b.foo equals foofoo
+  definition foofoofoo equals b.foo
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [85/85]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [5/5]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [1/1]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [5/5]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [15/15]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Scopelang -s A
+let scope A (foo_bar: ⟨integer⟩|context) (foo_baz: integer|internal)
+  (foo_fizz: integer|internal|output) =
+  let foo_bar : integer = reentrant or by default
+    error_empty ⟨ ⟨true ⊢ ⟨1⟩⟩ | false ⊢ ∅ ⟩;
+  let foo_baz : integer =
+    error_empty ⟨ ⟨true ⊢ ⟨foo_bar + 1⟩⟩ | false ⊢ ∅ ⟩;
+  let foo_fizz : integer =
+    error_empty ⟨ ⟨true ⊢ ⟨foo_baz + 1⟩⟩ | false ⊢ ∅ ⟩
+```
+
+```catala-test-inline
+$ catala Interpret -s B
+[RESULT] Computation successful! Results:
+[RESULT] foofoo = 4
+[RESULT] foofoofoo = 6
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s B --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] foofoo = 4
+[RESULT] foofoofoo = 6
+```

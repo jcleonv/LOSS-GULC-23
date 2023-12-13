@@ -1,0 +1,57 @@
+## Test all 'xor' combinations
+
+```catala
+declaration scope TestXor:
+  context output t_xor_t content boolean
+  context output t_xor_f content boolean
+  context output f_xor_t content boolean
+  context output f_xor_f content boolean
+
+scope TestXor:
+  definition t_xor_t equals true xor true
+  definition f_xor_t equals false xor true
+  definition t_xor_f equals true xor false
+  definition f_xor_f equals false xor false
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [85/85]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [8/8]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [8/8]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [12/12]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Interpret -s TestXor
+[RESULT] Computation successful! Results:
+[RESULT] f_xor_f = false
+[RESULT] f_xor_t = true
+[RESULT] t_xor_f = true
+[RESULT] t_xor_t = false
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s TestXor --avoid_exceptions --optimize
+[RESULT] Computation successful! Results:
+[RESULT] f_xor_f = false
+[RESULT] f_xor_t = true
+[RESULT] t_xor_f = true
+[RESULT] t_xor_t = false
+```

@@ -1,0 +1,48 @@
+> Module Mod_middle
+
+> Using Mod_def
+
+```catala-metadata
+declaration scope S:
+  input x content integer
+  output o1 content Mod_def.S
+  output o2 content money
+  context output o3 content money
+```
+
+```catala
+scope S:
+  definition o1 equals output of Mod_def.S
+  definition o2 equals o1.Mod_def.S.sr * 2. + o1.sr / 2.
+  definition o3 equals $44 * (decimal of x)
+```
+
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [70/70]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [9/9]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [2/2]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [9/9]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [7/7]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala typecheck
+[RESULT] Typechecking successful!
+```

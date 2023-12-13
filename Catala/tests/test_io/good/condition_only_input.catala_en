@@ -1,0 +1,59 @@
+# Test
+
+```catala
+declaration scope A:
+  input x condition
+  output y content integer
+
+declaration scope B:
+  a scope A
+
+scope A:
+  definition y equals if x then 0 else 1
+
+scope B:
+  assertion a.y = 1
+```
+
+
+```catala-test-inline
+$ catala Typecheck --check_invariants
+[RESULT]
+Invariant Dcalc__Invariants.invariant_typing_defaults
+   checked. result: [35/35]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_match_inversion
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_app_inversion
+   checked. result: [2/2]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_return_a_function
+   checked. result: [0/0]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_no_partial_evaluation
+   checked. result: [2/2]
+[RESULT]
+Invariant Dcalc__Invariants.invariant_default_no_arrow
+   checked. result: [4/4]
+[RESULT] Typechecking successful!
+```
+
+```catala-test-inline
+$ catala Dcalc -s B
+let scope B (B_in: B_in): B =
+  let sub_set a.x : bool = error_empty ⟨ ⟨true ⊢ ⟨false⟩⟩ | false ⊢ ∅ ⟩ in
+  let call result : A {y: integer} = A { A_in x_in = a.x; } in
+  let sub_get a.y : integer = result.y in
+  let assert _ : unit = assert ((a.y = 1)) in
+  return {B}
+```
+
+```catala-test-inline
+$ catala Interpret -s B
+[RESULT] Computation successful!
+```
+```catala-test-inline
+$ catala Interpret_Lcalc -s B --avoid_exceptions --optimize
+[RESULT] Computation successful!
+```
