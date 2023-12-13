@@ -1,0 +1,12 @@
+# macOS system files
+.DS_Store
+
+# Node modules
+node_modules/
+
+# Log files
+*.log
+
+# Temporary files
+*.tmp
+*.temp
